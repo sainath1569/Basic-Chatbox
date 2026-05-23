@@ -5,12 +5,76 @@ document.addEventListener("DOMContentLoaded", () => {
     const dbStatusBadge = document.getElementById("db-status-badge");
     const dbOfflineAlert = document.getElementById("db-offline-alert");
     const currentUser = document.getElementById("current-user").getAttribute("data-username");
+    const notificationBtn = document.getElementById("notification-btn");
 
     // Track already rendered messages to avoid re-rendering existing ones
     // We store a signature: "username|message|timestamp"
     const renderedMessages = new Set();
     let isInitialLoad = true;
     let pollIntervalId = null;
+
+    // Web Notification system configuration
+    function initNotifications() {
+        if (!("Notification" in window)) {
+            console.log("This browser does not support desktop notifications");
+            return;
+        }
+
+        // Show the notification button
+        notificationBtn.style.display = "inline-flex";
+        updateNotificationBtnUI();
+
+        notificationBtn.addEventListener("click", () => {
+            if (Notification.permission === "default") {
+                Notification.requestPermission().then(permission => {
+                    updateNotificationBtnUI();
+                    if (permission === "granted") {
+                        // Play a brief test notification
+                        new Notification("Notifications Enabled", {
+                            body: "You will now receive notifications for new messages when this tab is in the background.",
+                            icon: "https://cdn-icons-png.flaticon.com/512/5962/5962463.png"
+                        });
+                    }
+                });
+            } else if (Notification.permission === "denied") {
+                alert("Notifications are currently blocked by your browser settings. Please enable them in your browser's site settings to receive alerts.");
+            } else if (Notification.permission === "granted") {
+                alert("Notifications are already enabled!");
+            }
+        });
+    }
+
+    function updateNotificationBtnUI() {
+        if (Notification.permission === "granted") {
+            notificationBtn.classList.add("btn-active-notification");
+            notificationBtn.title = "Notifications Enabled";
+        } else if (Notification.permission === "denied") {
+            notificationBtn.classList.remove("btn-active-notification");
+            notificationBtn.style.opacity = "0.5";
+            notificationBtn.title = "Notifications Blocked";
+        } else {
+            notificationBtn.classList.remove("btn-active-notification");
+            notificationBtn.title = "Enable Notifications";
+        }
+    }
+
+    function sendNotification(sender, messageText) {
+        if (Notification.permission === "granted" && document.hidden) {
+            const bodyText = messageText.length > 80 ? messageText.substring(0, 77) + "..." : messageText;
+            try {
+                new Notification(`@${sender}`, {
+                    body: bodyText,
+                    icon: "https://cdn-icons-png.flaticon.com/512/5962/5962463.png",
+                    tag: "chat-msg" // Overwrite previous notification to avoid spamming the screen
+                });
+            } catch (e) {
+                console.error("Failed to trigger web notification:", e);
+            }
+        }
+    }
+
+    // Initialize notification checks
+    initNotifications();
 
     // Helper: Formats ISO date string into readable local HH:MM format
     function formatTime(isoStr) {
@@ -61,6 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
         renderedMessages.add(signature);
 
         const isMe = msg.username === currentUser;
+        if (!isInitialLoad && !isMe) {
+            sendNotification(msg.username, msg.message);
+        }
+
         const wrapper = document.createElement("div");
         wrapper.className = `msg-wrapper ${isMe ? 'msg-sent' : 'msg-received'}`;
 

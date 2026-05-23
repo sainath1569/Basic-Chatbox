@@ -585,8 +585,15 @@ input[type="text"]:focus {
     .chat-container {
         width: 100%;
         height: 100vh;
+        height: 100dvh; /* Dynamic viewport height to prevent iOS address bar cutoff */
         border-radius: 0;
         border-width: 0;
+    }
+    .chat-header {
+        padding: 0.75rem 1rem;
+    }
+    .chat-footer {
+        padding: 0.75rem 1rem;
     }
     .login-container {
         width: 100%;
@@ -596,4 +603,28 @@ input[type="text"]:focus {
         border-radius: 1.5rem 1.5rem 0 0;
         padding: 2.5rem 1.5rem;
     }
+    /* Hide username text on mobile to prevent header overflow */
+    .profile-name {
+        display: none;
+    }
+    .user-profile {
+        padding: 0.35rem; /* Turn profile into a simple circular container for avatar */
+    }
+    /* Hide status text on very small screens, keep only the indicator dot */
+    @media (max-width: 400px) {
+        .status-badge .status-text {
+            display: none;
+        }
+        .status-badge {
+            padding: 0.35rem;
+        }
+    }
 }
+
+/* Notification Button States */
+.btn-active-notification {
+    color: var(--status-online) !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+    background: rgba(16, 185, 129, 0.05) !important;
+}
+
