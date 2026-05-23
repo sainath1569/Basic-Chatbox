@@ -628,3 +628,262 @@ input[type="text"]:focus {
     background: rgba(16, 185, 129, 0.05) !important;
 }
 
+/* File Attachment Input/Button Styles */
+.attach-btn {
+    border-radius: 50%;
+    width: 2.8rem;
+    height: 2.8rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.attach-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* File Attachment Preview Styling */
+.file-preview-container {
+    background: rgba(20, 18, 36, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    transition: var(--transition-smooth);
+    max-height: 80px;
+    opacity: 1;
+    overflow: hidden;
+}
+
+.preview-hidden {
+    max-height: 0;
+    padding: 0 1rem;
+    margin-bottom: 0;
+    border-color: transparent;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.file-preview-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.file-preview-icon {
+    font-size: 1.25rem;
+}
+
+.file-preview-details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.preview-filename {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.preview-filesize {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.cancel-file-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    transition: var(--transition-smooth);
+}
+
+.cancel-file-btn:hover {
+    color: var(--status-offline);
+}
+
+/* Chat Image styling */
+.chat-img-wrapper {
+    margin-top: 0.5rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    max-width: 100%;
+    max-height: 240px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: zoom-in;
+    transition: transform 0.2s ease;
+}
+
+.chat-img-wrapper:hover {
+    transform: scale(1.01);
+}
+
+.chat-img {
+    width: 100%;
+    height: auto;
+    max-height: 240px;
+    object-fit: cover;
+    display: block;
+}
+
+/* File Attachment Card (for non-image files) */
+.file-attachment-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    width: 100%;
+    min-width: 240px;
+    max-width: 320px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition-smooth);
+}
+
+.file-attachment-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary-color);
+}
+
+.file-attachment-icon-wrapper {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/* Color codes for file type icons */
+.file-pdf .file-attachment-icon-wrapper {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.file-excel .file-attachment-icon-wrapper {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.file-word .file-attachment-icon-wrapper {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.file-general .file-attachment-icon-wrapper {
+    background: rgba(107, 114, 128, 0.15);
+    color: #9ca3af;
+}
+
+.file-attachment-details {
+    flex-grow: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.file-attachment-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-attachment-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.file-attachment-download-btn {
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: var(--transition-smooth);
+}
+
+.file-attachment-card:hover .file-attachment-download-btn {
+    color: var(--primary-color);
+}
+
+/* Lightbox Modal (Image Zoom) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 50px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(6, 5, 12, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 80vh;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    animation: zoom 0.25s ease-out;
+}
+
+@keyframes zoom {
+    from {transform:scale(0.9); opacity:0} 
+    to {transform:scale(1); opacity:1}
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: var(--primary-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 15px 0;
+    font-weight: 500;
+}
+

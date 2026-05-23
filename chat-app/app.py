@@ -86,7 +86,7 @@ def chat():
 
 @app.route("/send_message", methods=["POST"])
 def send_message():
-    """Saves a message to MongoDB."""
+    """Saves a message (with optional file attachment) to MongoDB."""
     if "username" not in session:
         return jsonify({"success": False, "error": "Unauthorized. Please choose a username."}), 401
     
@@ -97,18 +97,33 @@ def send_message():
             "error": "Database is currently offline. Message could not be saved."
         }), 503
 
+    message = ""
+    file_attachment = None
+
     # Check for JSON data or form-urlencoded
     if request.is_json:
         data = request.get_json()
         message = data.get("message", "").strip()
+        file_attachment = data.get("file")
     else:
         message = request.form.get("message", "").strip()
 
-    if not message:
-        return jsonify({"success": False, "error": "Message cannot be empty."}), 400
+    # Enforce validation: must have either text message or file attachment
+    if not message and not file_attachment:
+        return jsonify({"success": False, "error": "Message or file attachment cannot be empty."}), 400
     
     if len(message) > 1000:
         return jsonify({"success": False, "error": "Message is too long (max 1000 characters)."}), 400
+
+    # Validate file size if attached (max 4.5MB = 4718592 bytes)
+    if file_attachment:
+        file_size = file_attachment.get("size", 0)
+        if file_size > 4718592:
+            return jsonify({"success": False, "error": "Attached file is too large (max 4.5MB)."}), 400
+        
+        # Verify it has data and name
+        if not file_attachment.get("data") or not file_attachment.get("name"):
+            return jsonify({"success": False, "error": "Invalid file attachment format."}), 400
 
     try:
         msg_doc = {
@@ -116,6 +131,13 @@ def send_message():
             "message": message,
             "timestamp": datetime.utcnow()  # Store as native datetime object
         }
+        if file_attachment:
+            msg_doc["file"] = {
+                "data": file_attachment.get("data"),
+                "name": file_attachment.get("name"),
+                "type": file_attachment.get("type", "application/octet-stream"),
+                "size": file_attachment.get("size", 0)
+            }
         col.insert_one(msg_doc)
         return jsonify({"success": True})
     except PyMongoError as e:
@@ -146,11 +168,14 @@ def get_messages():
             # We'll parse it on client or display directly
             # doc['timestamp'] is a datetime object
             timestamp_str = doc.get("timestamp").isoformat() + "Z" if doc.get("timestamp") else datetime.utcnow().isoformat() + "Z"
-            messages.append({
+            msg_item = {
                 "username": doc.get("username"),
                 "message": doc.get("message"),
                 "timestamp": timestamp_str
-            })
+            }
+            if "file" in doc:
+                msg_item["file"] = doc.get("file")
+            messages.append(msg_item)
         
         # Reverse the list so it is in ascending order (oldest first)
         messages.reverse()
