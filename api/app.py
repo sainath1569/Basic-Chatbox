@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from dotenv import load_dotenv
@@ -9,8 +9,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-# Secret key for signing session cookies
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-secret-key-12345-chat-app")
 
 # MongoDB connection configuration
 mongo_uri = os.environ.get("MONGO_URI", "mongodb://localhost:27017/chat_db")
@@ -56,40 +54,9 @@ def get_db_collection():
 # Initialize DB connection on startup
 get_db_collection()
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    """Username entry page."""
-    # If user is already logged in, redirect to chat
-    if "username" in session:
-        return redirect(url_for("chat"))
-
-    error_msg = None
-    if request.method == "POST":
-        username = request.form.get("username", "").strip()
-        if not username:
-            error_msg = "Username cannot be empty."
-        elif len(username) > 30:
-            error_msg = "Username must be under 30 characters."
-        else:
-            session["username"] = username
-            return redirect(url_for("chat"))
-
-    return render_template("index.html", error_msg=error_msg)
-
-@app.route("/chat")
-def chat():
-    """Main chat page."""
-    if "username" not in session:
-        return redirect(url_for("index"))
-    
-    return render_template("chat.html", username=session["username"])
-
-@app.route("/send_message", methods=["POST"])
+@app.route("/api/send_message", methods=["POST"])
 def send_message():
     """Saves a message (with optional file attachment) to MongoDB."""
-    if "username" not in session:
-        return jsonify({"success": False, "error": "Unauthorized. Please choose a username."}), 401
-    
     col = get_db_collection()
     if col is None:
         return jsonify({
@@ -97,16 +64,16 @@ def send_message():
             "error": "Database is currently offline. Message could not be saved."
         }), 503
 
-    message = ""
-    file_attachment = None
+    if not request.is_json:
+        return jsonify({"success": False, "error": "Request must be JSON."}), 400
 
-    # Check for JSON data or form-urlencoded
-    if request.is_json:
-        data = request.get_json()
-        message = data.get("message", "").strip()
-        file_attachment = data.get("file")
-    else:
-        message = request.form.get("message", "").strip()
+    data = request.get_json()
+    username = data.get("username", "").strip()
+    message = data.get("message", "").strip()
+    file_attachment = data.get("file")
+
+    if not username:
+        return jsonify({"success": False, "error": "Username is required."}), 400
 
     # Enforce validation: must have either text message or file attachment
     if not message and not file_attachment:
@@ -127,7 +94,7 @@ def send_message():
 
     try:
         msg_doc = {
-            "username": session["username"],
+            "username": username,
             "message": message,
             "timestamp": datetime.utcnow()  # Store as native datetime object
         }
@@ -144,12 +111,9 @@ def send_message():
         print(f"Error saving message to MongoDB: {e}")
         return jsonify({"success": False, "error": "Failed to save message due to a database error."}), 500
 
-@app.route("/get_messages")
+@app.route("/api/get_messages")
 def get_messages():
     """Retrieves the latest messages as JSON."""
-    if "username" not in session:
-        return jsonify({"success": False, "error": "Unauthorized"}), 401
-
     col = get_db_collection()
     if col is None:
         return jsonify({
@@ -188,12 +152,6 @@ def get_messages():
             "db_status": "offline",
             "messages": []
         }), 500
-
-@app.route("/logout")
-def logout():
-    """Clears session and logs user out."""
-    session.pop("username", None)
-    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
