@@ -33,7 +33,7 @@
             </div>
             <div class="header-right">
                 <div class="user-profile">
-                    <span class="avatar">{{ username[0] | uppercase }}</span>
+                    <span class="avatar">{{ username[0] | upper }}</span>
                     <span class="profile-name">@{{ username }}</span>
                 </div>
                 <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm" id="leave-btn">
