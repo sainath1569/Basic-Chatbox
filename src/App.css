@@ -577,10 +577,14 @@ input[type="text"]:focus {
     to { opacity: 1; transform: scale(1); }
 }
 
+.leave-icon {
+    display: none;
+}
+
 /* Responsiveness Settings */
 @media (max-width: 640px) {
     body {
-        align-items: flex-end;
+        align-items: center;
     }
     .chat-container {
         width: 100%;
@@ -592,7 +596,7 @@ input[type="text"]:focus {
     
     /* Optimize Header for Mobile */
     .chat-header {
-        padding: 0.75rem 1rem;
+        padding: calc(0.75rem + env(safe-area-inset-top, 0px)) 1rem 0.75rem 1rem;
         gap: 0.5rem;
     }
     .header-left {
@@ -640,11 +644,11 @@ input[type="text"]:focus {
     #leave-btn {
         width: 2.1rem !important;
         height: 2.1rem !important;
-        padding: 0;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     
     /* Simplify status badge on mobile */
@@ -657,7 +661,7 @@ input[type="text"]:focus {
 
     /* Optimize Input Footer for Mobile */
     .chat-footer {
-        padding: 0.65rem 0.75rem;
+        padding: 0.65rem 0.75rem calc(0.65rem + env(safe-area-inset-bottom, 0px)) 0.75rem;
     }
     .chat-form {
         gap: 0.4rem;
@@ -705,12 +709,12 @@ input[type="text"]:focus {
     }
 
     .login-container {
-        width: 100%;
-        max-width: 100%;
+        width: 90%;
+        max-width: 400px;
     }
     .glass-card {
-        border-radius: 1.5rem 1.5rem 0 0;
-        padding: 2.5rem 1.5rem;
+        border-radius: 1.25rem;
+        padding: 2rem 1.5rem;
     }
 }
 
