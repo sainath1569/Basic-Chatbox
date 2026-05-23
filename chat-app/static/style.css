@@ -589,12 +589,121 @@ input[type="text"]:focus {
         border-radius: 0;
         border-width: 0;
     }
+    
+    /* Optimize Header for Mobile */
     .chat-header {
         padding: 0.75rem 1rem;
+        gap: 0.5rem;
     }
+    .header-left {
+        gap: 0.5rem;
+        min-width: 0; /* Enable truncation */
+    }
+    .header-left h2 {
+        font-size: 1.05rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .chat-logo {
+        font-size: 1.25rem;
+    }
+    .header-right {
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+    
+    /* Simplified user profile & icons in header */
+    .profile-name {
+        display: none;
+    }
+    .user-profile {
+        padding: 0.35rem;
+        border-radius: 50%;
+        border-width: 1px;
+    }
+    .avatar {
+        width: 1.4rem;
+        height: 1.4rem;
+        font-size: 0.75rem;
+    }
+    #notification-btn {
+        width: 2.1rem !important;
+        height: 2.1rem !important;
+    }
+    .leave-text {
+        display: none;
+    }
+    .leave-icon {
+        display: inline-block !important;
+    }
+    #leave-btn {
+        width: 2.1rem !important;
+        height: 2.1rem !important;
+        padding: 0;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Simplify status badge on mobile */
+    .status-badge .status-text {
+        display: none;
+    }
+    .status-badge {
+        padding: 0.35rem;
+    }
+
+    /* Optimize Input Footer for Mobile */
     .chat-footer {
-        padding: 0.75rem 1rem;
+        padding: 0.65rem 0.75rem;
     }
+    .chat-form {
+        gap: 0.4rem;
+    }
+    
+    /* Align all heights perfectly on mobile */
+    .attach-btn {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+    .chat-form input[type="text"] {
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+        height: 2.5rem;
+    }
+    #send-btn {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+    
+    /* Limit bubble width and make file cards responsive */
+    .msg-wrapper {
+        max-width: 85%;
+    }
+    .msg-bubble {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.9rem;
+    }
+    .file-attachment-card {
+        min-width: unset;
+        max-width: 100%;
+        width: 100%;
+        padding: 0.6rem 0.75rem;
+    }
+    .file-attachment-icon-wrapper {
+        width: 2.2rem;
+        height: 2.2rem;
+        font-size: 1.1rem;
+    }
+    .file-attachment-name {
+        font-size: 0.8rem;
+    }
+    .file-attachment-meta {
+        font-size: 0.7rem;
+    }
+
     .login-container {
         width: 100%;
         max-width: 100%;
@@ -602,22 +711,6 @@ input[type="text"]:focus {
     .glass-card {
         border-radius: 1.5rem 1.5rem 0 0;
         padding: 2.5rem 1.5rem;
-    }
-    /* Hide username text on mobile to prevent header overflow */
-    .profile-name {
-        display: none;
-    }
-    .user-profile {
-        padding: 0.35rem; /* Turn profile into a simple circular container for avatar */
-    }
-    /* Hide status text on very small screens, keep only the indicator dot */
-    @media (max-width: 400px) {
-        .status-badge .status-text {
-            display: none;
-        }
-        .status-badge {
-            padding: 0.35rem;
-        }
     }
 }
 
